@@ -3,13 +3,13 @@ package main
 import "fmt"
 
 func main() {
-	soldiers := constructSoldiers(1000000)
+	soldiers := constructSoldiers(50)
 	finalSoldier := completeRound(soldiers)
 	fmt.Println("Final soldier is ", finalSoldier)
 }
 
 func completeRound(soldiers []*Soldier) (ret int) {
-	printSoldiers(soldiers)
+	//printSoldiers(soldiers)
 	if len(soldiers) == 1 {
 		return (*soldiers[0]).Index
 	} else {
@@ -22,14 +22,10 @@ func completeRound(soldiers []*Soldier) (ret int) {
 		newSoldiers := make([]*Soldier, newLength, newLength)
 		for i, j := 1, 0; i < len(soldiers); i, j = i+2, j+1 {
 			(*soldiers[i]).Status = false
-			newSoldiers[j] = &Soldier{
-				Index:  (*soldiers[i-1]).Index,
-				Status: (*soldiers[i-1]).Status}
+			newSoldiers[j] = soldiers[i-1]
 		}
 		if len(soldiers)%2 != 0 {
-			newSoldiers[len(newSoldiers)-1] = &Soldier{
-				Index:  (*soldiers[len(soldiers)-1]).Index,
-				Status: (*soldiers[len(soldiers)-1]).Status}
+			newSoldiers[len(newSoldiers)-1] = soldiers[len(soldiers)-1]
 
 			newSoldiersRightShift := make([]*Soldier, newLength, newLength)
 			newSoldiersRightShift[0] = newSoldiers[len(newSoldiers)-1]
