@@ -3,29 +3,31 @@ package main
 import "fmt"
 
 func main() {
-	soldiers := constructSoldiers(50)
-	finalSoldier := completeRound(soldiers)
+	soldiers := Soldiers{}
+	constructSoldiersGeneric(&soldiers, 100)
+	finalSoldier := completeRound(&soldiers)
 	fmt.Println("Final soldier is ", finalSoldier)
 }
 
-func completeRound(soldiers []*Soldier) (ret int) {
-	//printSoldiers(soldiers)
-	if len(soldiers) == 1 {
-		return (*soldiers[0]).Index
+func completeRound(soldiers *Soldiers) (ret int) {
+	printSoldiersGeneric(soldiers)
+	soldiersLocalReference := soldiers.Soldiers
+	if len(soldiersLocalReference) == 1 {
+		return (*soldiersLocalReference[0]).Index
 	} else {
 		var newLength int
-		if len(soldiers)%2 == 0 {
-			newLength = len(soldiers) / 2
+		if len(soldiersLocalReference)%2 == 0 {
+			newLength = len(soldiersLocalReference) / 2
 		} else {
-			newLength = (len(soldiers) / 2) + 1
+			newLength = (len(soldiersLocalReference) / 2) + 1
 		}
 		newSoldiers := make([]*Soldier, newLength, newLength)
-		for i, j := 1, 0; i < len(soldiers); i, j = i+2, j+1 {
-			(*soldiers[i]).Status = false
-			newSoldiers[j] = soldiers[i-1]
+		for i, j := 1, 0; i < len(soldiersLocalReference); i, j = i+2, j+1 {
+			(*soldiersLocalReference[i]).Status = false
+			newSoldiers[j] = soldiersLocalReference[i-1]
 		}
-		if len(soldiers)%2 != 0 {
-			newSoldiers[len(newSoldiers)-1] = soldiers[len(soldiers)-1]
+		if len(soldiersLocalReference)%2 != 0 {
+			newSoldiers[len(newSoldiers)-1] = soldiersLocalReference[len(soldiersLocalReference)-1]
 
 			newSoldiersRightShift := make([]*Soldier, newLength, newLength)
 			newSoldiersRightShift[0] = newSoldiers[len(newSoldiers)-1]
@@ -34,29 +36,11 @@ func completeRound(soldiers []*Soldier) (ret int) {
 				newSoldiersRightShift[i+1] = newSoldiers[i]
 			}
 
-			return completeRound(newSoldiersRightShift)
+			return completeRound(&Soldiers{newSoldiersRightShift})
 		} else {
-			return completeRound(newSoldiers)
+			return completeRound(&Soldiers{newSoldiers})
 		}
 	}
-}
-
-func constructSoldiers(maxCapacity int64) (soldiers []*Soldier) {
-	soldiers1 := make([]*Soldier, maxCapacity, maxCapacity)
-	for i := range soldiers1 {
-		soldiers1[i] = &Soldier{
-			Index:  i + 1,
-			Status: true}
-	}
-	soldiers = soldiers1
-	return
-}
-
-func printSoldiers(soldiers []*Soldier) {
-	for i := range soldiers {
-		fmt.Print(" { %d } ", (*soldiers[i]).Index)
-	}
-	fmt.Println()
 }
 
 type Soldier struct {
@@ -64,4 +48,35 @@ type Soldier struct {
 	Status bool
 }
 
-//type Soldiers []Soldiers
+type Soldiers struct {
+	Soldiers []*Soldier
+}
+
+func (soldiers *Soldiers) constructSoldiers(maxCapacity int64) {
+	soldiers.Soldiers = make([]*Soldier, maxCapacity, maxCapacity)
+	for i := range soldiers.Soldiers {
+		soldiers.Soldiers[i] = &Soldier{
+			Index:  i + 1,
+			Status: true}
+	}
+}
+
+func (soldiers *Soldiers) printSoldiers() {
+	for i := range soldiers.Soldiers {
+		fmt.Print(" { %d } ", (*soldiers.Soldiers[i]).Index)
+	}
+	fmt.Println()
+}
+
+type SoldierOperations interface {
+	constructSoldiers(maxCapacity int64)
+	printSoldiers()
+}
+
+func constructSoldiersGeneric(soldierOperations SoldierOperations, maxCapacity int64) {
+	soldierOperations.constructSoldiers(maxCapacity)
+}
+
+func printSoldiersGeneric(soldierOperations SoldierOperations) {
+	soldierOperations.printSoldiers()
+}
