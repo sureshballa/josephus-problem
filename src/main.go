@@ -2,9 +2,17 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
+
+	. "soldiers"
 )
 
 func main() {
-	fmt.Println("My favorite number is", rand.Intn(10))
+	soldiersCompledTypeObject := SoldiersComplexType{}
+	constructSoldiersGeneric(&soldiersCompledTypeObject, 50)
+	finalSoldier := CompleteRound(&soldiersCompledTypeObject)
+	fmt.Println("Final live soldier is ", finalSoldier)
+}
+
+func constructSoldiersGeneric(soldierOperations SoldierOperations, maxCapacity int64) {
+	soldierOperations.ConstructSoldiers(maxCapacity)
 }
