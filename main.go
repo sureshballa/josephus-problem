@@ -3,15 +3,15 @@ package main
 import "fmt"
 
 func main() {
-	soldiers := Soldiers{}
-	constructSoldiersGeneric(&soldiers, 100)
-	finalSoldier := completeRound(&soldiers)
-	fmt.Println("Final soldier is ", finalSoldier)
+	soldiersCompledTypeObject := SoldiersComplexType{}
+	constructSoldiersGeneric(&soldiersCompledTypeObject, 50)
+	finalSoldier := completeRound(&soldiersCompledTypeObject)
+	fmt.Println("Final live soldier is ", finalSoldier)
 }
 
-func completeRound(soldiers *Soldiers) (ret int) {
-	printSoldiersGeneric(soldiers)
-	soldiersLocalReference := soldiers.Soldiers
+func completeRound(soldiersCompledTypeObject *SoldiersComplexType) (ret int) {
+	printSoldiersGeneric(soldiersCompledTypeObject)
+	soldiersLocalReference := soldiersCompledTypeObject.Soldiers
 	if len(soldiersLocalReference) == 1 {
 		return (*soldiersLocalReference[0]).Index
 	} else {
@@ -36,9 +36,9 @@ func completeRound(soldiers *Soldiers) (ret int) {
 				newSoldiersRightShift[i+1] = newSoldiers[i]
 			}
 
-			return completeRound(&Soldiers{newSoldiersRightShift})
+			return completeRound(&SoldiersComplexType{newSoldiersRightShift})
 		} else {
-			return completeRound(&Soldiers{newSoldiers})
+			return completeRound(&SoldiersComplexType{newSoldiers})
 		}
 	}
 }
@@ -48,22 +48,22 @@ type Soldier struct {
 	Status bool
 }
 
-type Soldiers struct {
+type SoldiersComplexType struct {
 	Soldiers []*Soldier
 }
 
-func (soldiers *Soldiers) constructSoldiers(maxCapacity int64) {
-	soldiers.Soldiers = make([]*Soldier, maxCapacity, maxCapacity)
-	for i := range soldiers.Soldiers {
-		soldiers.Soldiers[i] = &Soldier{
+func (soldiersCompledTypeObject *SoldiersComplexType) constructSoldiers(maxCapacity int64) {
+	soldiersCompledTypeObject.Soldiers = make([]*Soldier, maxCapacity, maxCapacity)
+	for i := range soldiersCompledTypeObject.Soldiers {
+		soldiersCompledTypeObject.Soldiers[i] = &Soldier{
 			Index:  i + 1,
 			Status: true}
 	}
 }
 
-func (soldiers *Soldiers) printSoldiers() {
-	for i := range soldiers.Soldiers {
-		fmt.Print(" { %d } ", (*soldiers.Soldiers[i]).Index)
+func (soldiersCompledTypeObject *SoldiersComplexType) printSoldiers() {
+	for i := range soldiersCompledTypeObject.Soldiers {
+		fmt.Print(" { %d } ", (*soldiersCompledTypeObject.Soldiers[i]).Index)
 	}
 	fmt.Println()
 }
