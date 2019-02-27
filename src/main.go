@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	
+
 	var wg sync.WaitGroup
 	operationStatusChannel := make(chan OperationStatus, 10)
 
@@ -41,21 +41,33 @@ func main() {
 	for received := range operationStatusChannel {
 		fmt.Printf("For %d, final live soldier is %d\n", received.Number, received.LiveNumber)
 	}
-	
+
 }
 
 func (operationStatus *OperationStatus) solve() {
 	soldiersCompledTypeObject := SoldiersComplexType{}
 	constructSoldiersGeneric(&soldiersCompledTypeObject, operationStatus.Number)
-	operationStatus.LiveNumber = CompleteRound(&soldiersCompledTypeObject)
+
+	//Inject algorithm dependacy
+	recursionAlgorithm := &RecursionAlgorithm{}
+	recursionAlgorithm.Name = "Recursion"
+	soldiersCompledTypeObject.Algorithm = recursionAlgorithm
+
+	//Inject dummy for testing purposes
+	// dummyAlgorithm := &DummyAlgorithm{}
+	// dummyAlgorithm.Name = "Dummy"
+	// soldiersCompledTypeObject.Algorithm = dummyAlgorithm
+
+	operationStatus.LiveNumber = soldiersCompledTypeObject.Algorithm.Run(&soldiersCompledTypeObject)
+
 }
 
-func constructSoldiersGeneric(soldierOperations SoldierOperations, maxCapacity int64) {
+func constructSoldiersGeneric(soldierOperations ISoldierOperations, maxCapacity int64) {
 	soldierOperations.ConstructSoldiers(maxCapacity)
 }
 
 type OperationStatus struct {
-	Number int64
-	Status bool
-	LiveNumber	int
+	Number     int64
+	Status     bool
+	LiveNumber int
 }

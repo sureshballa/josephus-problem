@@ -8,12 +8,17 @@ type Soldier struct {
 }
 
 type SoldiersComplexType struct {
-	Soldiers []*Soldier
+	Soldiers  []*Soldier
+	Algorithm IAlgorithm
 }
 
-type SoldierOperations interface {
+type ISoldierOperations interface {
 	ConstructSoldiers(maxCapacity int64)
 	PrintSoldiers()
+}
+
+type IAlgorithm interface {
+	Run(soldiersComplexTypeObject *SoldiersComplexType) (ret int)
 }
 
 func (soldiersComplexTypeObject *SoldiersComplexType) ConstructSoldiers(maxCapacity int64) {
@@ -32,11 +37,15 @@ func (soldiersComplexTypeObject *SoldiersComplexType) PrintSoldiers() {
 	fmt.Println()
 }
 
-func printSoldiersGeneric(soldierOperations SoldierOperations) {
+func printSoldiersGeneric(soldierOperations ISoldierOperations) {
 	soldierOperations.PrintSoldiers()
 }
 
-func CompleteRound(soldiersComplexTypeObject *SoldiersComplexType) (ret int) {
+type RecursionAlgorithm struct {
+	Name string
+}
+
+func (recursionAlgorithm *RecursionAlgorithm) Run(soldiersComplexTypeObject *SoldiersComplexType) (ret int) {
 	//printSoldiersGeneric(soldiersCompledTypeObject)
 	soldiersLocalReference := soldiersComplexTypeObject.Soldiers
 	if len(soldiersLocalReference) == 1 {
@@ -63,9 +72,25 @@ func CompleteRound(soldiersComplexTypeObject *SoldiersComplexType) (ret int) {
 				newSoldiersRightShift[i+1] = newSoldiers[i]
 			}
 
-			return CompleteRound(&SoldiersComplexType{newSoldiersRightShift})
+			newComplexObject := &SoldiersComplexType{}
+			newComplexObject.Soldiers = newSoldiersRightShift
+			newComplexObject.Algorithm = recursionAlgorithm
+
+			return recursionAlgorithm.Run(newComplexObject)
 		} else {
-			return CompleteRound(&SoldiersComplexType{newSoldiers})
+			newComplexObject := &SoldiersComplexType{}
+			newComplexObject.Soldiers = newSoldiers
+			newComplexObject.Algorithm = recursionAlgorithm
+
+			return recursionAlgorithm.Run(newComplexObject)
 		}
 	}
+}
+
+type DummyAlgorithm struct {
+	Name string
+}
+
+func (dummyAlgorithm *DummyAlgorithm) Run(soldiersComplexTypeObject *SoldiersComplexType) (ret int) {
+	return 1
 }
