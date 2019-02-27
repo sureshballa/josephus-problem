@@ -16,18 +16,18 @@ type SoldierOperations interface {
 	PrintSoldiers()
 }
 
-func (soldiersCompledTypeObject *SoldiersComplexType) ConstructSoldiers(maxCapacity int64) {
-	soldiersCompledTypeObject.Soldiers = make([]*Soldier, maxCapacity, maxCapacity)
-	for i := range soldiersCompledTypeObject.Soldiers {
-		soldiersCompledTypeObject.Soldiers[i] = &Soldier{
+func (soldiersComplexTypeObject *SoldiersComplexType) ConstructSoldiers(maxCapacity int64) {
+	soldiersComplexTypeObject.Soldiers = make([]*Soldier, maxCapacity, maxCapacity)
+	for i := range soldiersComplexTypeObject.Soldiers {
+		soldiersComplexTypeObject.Soldiers[i] = &Soldier{
 			Index:  i + 1,
 			Status: true}
 	}
 }
 
-func (soldiersCompledTypeObject *SoldiersComplexType) PrintSoldiers() {
-	for i := range soldiersCompledTypeObject.Soldiers {
-		fmt.Print(" { %d } ", (*soldiersCompledTypeObject.Soldiers[i]).Index)
+func (soldiersComplexTypeObject *SoldiersComplexType) PrintSoldiers() {
+	for i := range soldiersComplexTypeObject.Soldiers {
+		fmt.Print(" { %d } ", (*soldiersComplexTypeObject.Soldiers[i]).Index)
 	}
 	fmt.Println()
 }
@@ -36,9 +36,9 @@ func printSoldiersGeneric(soldierOperations SoldierOperations) {
 	soldierOperations.PrintSoldiers()
 }
 
-func CompleteRound(soldiersCompledTypeObject *SoldiersComplexType) (ret int) {
-	printSoldiersGeneric(soldiersCompledTypeObject)
-	soldiersLocalReference := soldiersCompledTypeObject.Soldiers
+func CompleteRound(soldiersComplexTypeObject *SoldiersComplexType) (ret int) {
+	//printSoldiersGeneric(soldiersCompledTypeObject)
+	soldiersLocalReference := soldiersComplexTypeObject.Soldiers
 	if len(soldiersLocalReference) == 1 {
 		return (*soldiersLocalReference[0]).Index
 	} else {
